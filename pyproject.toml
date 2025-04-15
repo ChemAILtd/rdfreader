@@ -15,7 +15,7 @@ classifiers = [
 
 [tool.poetry.dependencies]
 python = ">=3.9, <4.0"
-rdkit = "^2022.9.3"
+rdkit = ">=2023.0.0"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^7.2.0"
