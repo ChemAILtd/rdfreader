@@ -2,22 +2,22 @@ repos:
 
 # sync pre-commit versions with poetyry.lock (doesn't work with all hooks)
 -   repo: https://github.com/floatingpurr/sync_with_poetry
-    rev: "1.1.0"
+    rev: "1.2.0"
     hooks:
     -  id: sync_with_poetry
 
 -   repo: https://github.com/psf/black
-    rev: "24.4.0"
+    rev: "25.1.0"
     hooks:
     -  id: black
 
 -   repo: https://github.com/PyCQA/docformatter
-    rev: "v1.7.5"
+    rev: "v1.7.7"
     hooks:
     -  id: docformatter
 
 -   repo: https://github.com/PyCQA/isort
-    rev: 5.13.2
+    rev: 6.0.1
     hooks:
     -  id: isort
 
@@ -28,12 +28,12 @@ repos:
       args: [--in-place, --remove-all-unused-imports, --remove-unused-variables, --ignore-init-module-imports]
 
 -   repo: https://github.com/pre-commit/pre-commit-hooks
-    rev: v4.6.0
+    rev: v5.0.0
     hooks:
     -   id: check-yaml
 
 -   repo: https://github.com/PyCQA/flake8
-    rev: 7.0.0
+    rev: 7.2.0
     hooks:
     -   id: flake8
 
