@@ -105,7 +105,7 @@ pillow==10.3.0 ; python_version >= "3.9" and python_version < "4.0" \
     --hash=sha256:f0d0591a0aeaefdaf9a5e545e7485f89910c977087e7de2b6c388aec32011e9f \
     --hash=sha256:fdcbb4068117dfd9ce0138d068ac512843c52295ed996ae6dd1faf537b6dbc27 \
     --hash=sha256:ff61bfd9253c3915e6d41c651d5f962da23eda633cf02262990094a18a55371a
-rdkit==2022.9.5 ; python_version >= "3.9" and python_version < "4.0" \
+rdkit==2023.9.5; python_version >= "3.9" and python_version < "4.0" \
     --hash=sha256:072c6c72c09a9ecc02a9df11adc4500005f883878c4146846bfc33c2739cf2de \
     --hash=sha256:25f035e07dc179cd41763ed6d52aaed04ff6125e2315ee69b3f982c29757a40f \
     --hash=sha256:4324b703ac44d8486a911c3313a79df6d75b04ede54c62dbf611d0212658eac5 \
