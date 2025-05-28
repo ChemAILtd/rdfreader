@@ -3,7 +3,7 @@
 [![Coverage Status](https://coveralls.io/repos/github/ChemAILtd/rdfreader/badge.svg)](https://coveralls.io/github/ChemAILtd/rdfreader)
 [![pre-commit.ci status](https://results.pre-commit.ci/badge/github/ChemAILtd/rdfreader/main.svg)](https://results.pre-commit.ci/latest/github/ChemAILtd/rdfreader/main)
 [![Tests](https://github.com/ChemAILtd/rdfreader/actions/workflows/test.yml/badge.svg)](https://github.com/ChemAILtd/rdfreader/actions?workflow=test)
-[![License](https://img.shields.io/github/license/ChemAILtd/rdfreader)](https://github.com/ChemAILtd/rdfreader/blob/master/LICENSE)
+[![License](https://img.shields.io/github/license/ChemAILtd/rdfreader)](https://github.com/ChemAILtd/rdfreader/blob/master/LICENSE.txt)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 [![Python versions](https://img.shields.io/pypi/pyversions/rdfreader.svg)](https://pypi.python.org/pypi/rdfreader/)
 
