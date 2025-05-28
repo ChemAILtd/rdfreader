@@ -136,10 +136,12 @@ class RDFParser:
         # capture the rxn block
         rxn_block: str = ""
         f_last_pos = self.f.tell()  # ensure f_last_pos is defined
+        next_f_last_pos = f_last_pos
         while not line.startswith("$RFMT") and not line == "":
-            f_last_pos = self.f.tell()
+            f_last_pos = next_f_last_pos
             rxn_block += line
             line: str = self._readline()
+            next_f_last_pos = f_last_pos + len(line.encode("utf-8")) + 1
 
         # send the file pointer back one line so it is at the start of the
         # next rxn block
