@@ -57,7 +57,7 @@ The project is managed and packaged using [poetry](https://python-poetry.org/doc
 ### Installation
 
 ``` bash
-git clone https://github.com/deepmatterltd/rdfreader
+git clone https://github.com/ChemAILtd/rdfreader.git
 poetry install  # create a virtual environment and install the project dependencies
 pre-commit install  # install pre-commit hooks, these mostly manage codestyle
 ```
