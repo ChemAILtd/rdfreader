@@ -50,6 +50,20 @@ with open(rdf_file_name, "r") as rdf_file:
         reactants[0].rd_mol # an RDKit molecule object
 ```
 
+### Example Data
+
+You can find example data in the `test/resources directory`. `spresi-100.rdf` contains 100 example records from SPRESI.
+
+### Important Note Regarding File Formats
+
+If you are using files that have been saved with Windows-style carriage returns (`^M^M`, or `\r\r`), you may encounter issues when running this package.
+
+To correct this issue, you can use the following `sed` command in a Linux-based terminal to convert double carriage returns to single ones in affected files:
+
+```bash
+sed -i 's/\r\r/\r/g' reactions.rdf
+```
+
 ## Developer Guide
 
 The project is managed and packaged using [poetry](https://python-poetry.org/docs/#installation).
@@ -79,6 +93,3 @@ To release a new version:
 - Use the github website to create a release. Tag the commit to be released with a version number, e.g. v1.2.3. The tag should be in v*.*.* and match the version number in the pyproject.toml file.
 - When the release is published, a github workflow will run, build a wheel and publish it to PyPI.
 
-### Example Data
-
-You can find example data in the `test/resources directory`. `spresi-100.rdf` contains 100 example records from SPRESI.
