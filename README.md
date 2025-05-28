@@ -82,3 +82,13 @@ To release a new version:
 ### Example Data
 
 You can find example data in the `test/resources directory`. `spresi-100.rdf` contains 100 example records from SPRESI.
+
+### Important Note Regarding File Formats
+
+If you are using files that have been saved with Windows-style carriage returns (`^M^M`, or `\r\r`), you may encounter issues when running this package.
+
+To correct this issue, you can use the following `sed` command in a Linux-based terminal to convert double carriage returns to single ones in affected files:
+
+```bash
+sed -i 's/\r\r/\r/g' reactions.rdf
+```
