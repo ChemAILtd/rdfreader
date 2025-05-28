@@ -1,9 +1,9 @@
 # RDF READER
 
-[![Coverage Status](https://coveralls.io/repos/github/deepmatterltd/rdfreader/badge.svg)](https://coveralls.io/github/deepmatterltd/rdfreader)
-[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/deepmatterltd/rdfreader/main.svg)](https://results.pre-commit.ci/latest/github/deepmatterltd/rdfreader/main)
-[![Tests](https://github.com/deepmatterltd/rdfreader/actions/workflows/test.yml/badge.svg)](https://github.com/deepmatterltd/rdfreader/actions?workflow=test)
-[![License](https://img.shields.io/github/license/deepmatterltd/rdfreader)](https://github.com/deepmatterltd/rdfreader/blob/master/LICENSE)
+[![Coverage Status](https://coveralls.io/repos/github/ChemAILtd/rdfreader/badge.svg)](https://coveralls.io/github/ChemAILtd/rdfreader)
+[![pre-commit.ci status](https://results.pre-commit.ci/badge/github/ChemAILtd/rdfreader/main.svg)](https://results.pre-commit.ci/latest/github/ChemAILtd/rdfreader/main)
+[![Tests](https://github.com/ChemAILtd/rdfreader/actions/workflows/test.yml/badge.svg)](https://github.com/ChemAILtd/rdfreader/actions?workflow=test)
+[![License](https://img.shields.io/github/license/ChemAILtd/rdfreader)](https://github.com/ChemAILtd/rdfreader/blob/master/LICENSE.txt)
 [![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/python/black)
 [![Python versions](https://img.shields.io/pypi/pyversions/rdfreader.svg)](https://pypi.python.org/pypi/rdfreader/)
 
@@ -28,22 +28,22 @@ with open(rdf_file_name, "r") as rdf_file:
     rdfreader = RDFParser(
         rdf_file,
         except_on_invalid_molecule=False,  # will return None instead of raising an exception if a molecule is invalid
-        except_on_invalid_reaction=False,  # will return None instead of raising an exception if a reaction is invalid 
+        except_on_invalid_reaction=False,  # will return None instead of raising an exception if a reaction is invalid
     )
 
     for rxn in rdfreader:
         if rxn is None:
             continue # the parser failed to read the reaction, go to the next one
-  
+
         # rxn is a Reaction object, it is several attributes, including:
         print(rxn.smiles) # reaction SMILES string
         print(rxn.properties) # a dictionary of properties extracted from the RXN record
-        
+
         reactants = rxn.reactants # a list of Molecule objects
         products = rxn.products
-        solvents = rxn.solvents 
-        catalysts = rxn.catalysts 
- 
+        solvents = rxn.solvents
+        catalysts = rxn.catalysts
+
         # Molecule objects have several attributes, including:
         print(reactants[0].smiles)
         print(reactants[0].properties) # a dictionary of properties extracted from the MOL record (often empty)
@@ -57,7 +57,7 @@ The project is managed and packaged using [poetry](https://python-poetry.org/doc
 ### Installation
 
 ``` bash
-git clone https://github.com/deepmatterltd/rdfreader
+git clone https://github.com/ChemAILtd/rdfreader.git
 poetry install  # create a virtual environment and install the project dependencies
 pre-commit install  # install pre-commit hooks, these mostly manage codestyle
 ```
