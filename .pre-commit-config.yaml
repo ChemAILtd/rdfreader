@@ -38,9 +38,14 @@ repos:
     -   id: flake8
 
 - repo: https://github.com/python-poetry/poetry
-  rev: '1.8.0'
+  rev: '2.1.3'
   hooks:
     - id: poetry-check
     # - id: poetry-lock  # a very time consuming hook, disable by default
+
+
+- repo: https://github.com/python-poetry/poetry-plugin-export
+  rev: '1.9.0'
+  hooks:
     - id: poetry-export
       args: ["-f", "requirements.txt", "-o", "requirements.txt"]#
