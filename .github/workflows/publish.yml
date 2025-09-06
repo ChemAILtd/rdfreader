@@ -28,7 +28,7 @@ jobs:
         poetry-version: "2.1.3"
 
     - name: Publish to PyPI
-      run: >-
+      run: |
         poetry config pypi-token.pypi ${{ secrets.PYPI_API_TOKEN }}
         poetry publish --build
 
