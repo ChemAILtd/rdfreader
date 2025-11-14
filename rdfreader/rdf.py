@@ -157,4 +157,3 @@ class RDFParser:
             return line
 
         return self.f.readline()
-
