@@ -14,6 +14,7 @@ class RDFParser:
     _header_retrieved: bool = False
     lineno: int = 1
     rdf_metadata: dict[str, str] = {}
+    _next_line: str | None = None  # Lookahead buffer
 
     def __init__(
         self,
@@ -135,17 +136,12 @@ class RDFParser:
 
         # capture the rxn block
         rxn_block: str = ""
-        f_last_pos = self.f.tell()  # ensure f_last_pos is defined
-        next_f_last_pos = f_last_pos
         while not line.startswith("$RFMT") and not line == "":
-            f_last_pos = next_f_last_pos
             rxn_block += line
-            line: str = self._readline()
-            next_f_last_pos = f_last_pos + len(line.encode("utf-8")) + 1
+            line = self._readline()
 
-        # send the file pointer back one line so it is at the start of the
-        # next rxn block
-        self.f.seek(f_last_pos)
+        # Store lookahead line for next iteration
+        self._next_line = line
         self.lineno -= 1
 
         return rxn_block, reg_no, start_lineno
@@ -153,4 +149,12 @@ class RDFParser:
     def _readline(self):
         """Wraps f.read and increments the line number."""
         self.lineno += 1
+
+        # Check the lookahead buffer first
+        if self._next_line is not None:
+            line = self._next_line
+            self._next_line = None
+            return line
+
         return self.f.readline()
+
