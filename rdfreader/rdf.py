@@ -1,6 +1,7 @@
 # typing
 from io import TextIOWrapper
 from pathlib import Path
+from typing import Optional
 
 from rdfreader.chem.reaction import Reaction
 from rdfreader.parse.utils import CTF_RXNBLOCK_HEADER_FORMAT_STRING
@@ -14,7 +15,7 @@ class RDFParser:
     _header_retrieved: bool = False
     lineno: int = 1
     rdf_metadata: dict[str, str] = {}
-    _next_line: str | None = None  # Lookahead buffer
+    _next_line: Optional[str] = None  # Lookahead buffer
 
     def __init__(
         self,
