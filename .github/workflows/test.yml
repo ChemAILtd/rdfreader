@@ -1,6 +1,8 @@
 name: Testing
 
-on: [push]
+on:
+  push:
+  pull_request:
 
 # TODO: create a new action that combines the python/poetry setup and install across both jobs
 
