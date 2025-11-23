@@ -4,6 +4,9 @@ on:
   push:
   pull_request:
 
+permissions:
+  contents: read
+
 # TODO: create a new action that combines the python/poetry setup and install across both jobs
 
 jobs:
