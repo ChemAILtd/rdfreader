@@ -7,7 +7,7 @@ repos:
     -  id: sync_with_poetry
 
 -   repo: https://github.com/psf/black-pre-commit-mirror
-    rev: "25.12.0"
+    rev: "26.1.0"
     hooks:
     -  id: black
 
@@ -38,14 +38,14 @@ repos:
     -   id: flake8
 
 - repo: https://github.com/python-poetry/poetry
-  rev: '2.2.1'
+  rev: '2.3.1'
   hooks:
     - id: poetry-check
     # - id: poetry-lock  # a very time consuming hook, disable by default
 
 
 - repo: https://github.com/python-poetry/poetry-plugin-export
-  rev: '1.9.0'
+  rev: '1.10.0'
   hooks:
     - id: poetry-export
       args: ["-f", "requirements.txt", "-o", "requirements.txt"]#
