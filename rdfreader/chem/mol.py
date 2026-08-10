@@ -26,7 +26,6 @@ class Molecule:
         properties : dict[str, Any]
             A dictionary of properties.
         """
-
         self.except_on_invalid_molecule: bool = except_on_invalid_molecule
         self.properties: dict[str, Any] = properties
         self.mol_block: str = mol_block  # calls mol_block setter
@@ -116,7 +115,6 @@ class Molecule:
         Molecule
             A Molecule object.
         """
-
         mol = cls()
         mol._from_mol_block(mol_block, properties)
         return mol

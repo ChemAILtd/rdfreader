@@ -43,7 +43,6 @@ def get_mol_block_metadata(
     dict
         A dictionary of metadata.
     """
-
     metadata = {}
     mol_block_lines = mol_block.split("\n")
     metadata["molecule_name"] = get_whole_line_item(mol_block_lines[0])
@@ -73,7 +72,6 @@ def _parse_large_regno(mol_block_lines: list[str]) -> str:
         The registry number. If None is returned, the registry number is not
         present.
     """
-
     for line in mol_block_lines:
         if line.startswith("M  REG "):
             return get_line_item(line, [7, len(line)])

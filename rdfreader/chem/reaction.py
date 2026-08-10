@@ -29,7 +29,6 @@ class Reaction:
         initialized with that, otherwise the reaction will be
         initialized empty.
         """
-
         self.rxn_block = rxn_block
         self.rdf_metadata = rdf_metadata
         self.id = id
@@ -66,7 +65,6 @@ class Reaction:
         rdf_path : Path
             A path to a rdf file.
         """
-
         if not validate_rxn_block(self.rxn_block):
             raise ValueError("Reaction block is invalid.")
 
