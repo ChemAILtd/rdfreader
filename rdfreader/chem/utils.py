@@ -14,7 +14,6 @@ def mol_list_to_smiles(mol_list: list[Molecule]) -> str:
     str
         The SMILES string.
     """
-
     return ".".join([mol.smiles for mol in mol_list if mol.smiles is not None])
 
 
@@ -25,7 +24,6 @@ def reaction_smiles(
 ) -> str:
     """Create a reaction smiles string from lists of product, reactant, and
     reagent molecules."""
-
     product_smiles = mol_list_to_smiles(products)
     reactant_smiles = mol_list_to_smiles(reactants)
     reagent_smiles = mol_list_to_smiles(reagents)

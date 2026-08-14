@@ -80,7 +80,6 @@ def get_line_item(
     str
         The line item.
     """
-
     line = line[slice(*character_index)] if character_index else line
     line = line.strip("\n")  # remove newline
     line = line.strip()  # remove whitespace
@@ -104,17 +103,18 @@ def get_line_item(
 
 
 def get_whole_line_item(line: str) -> str:
-    """Return a data item that is from a whole line. Item must be a string.
+    """Return a data item that is from a whole line.
 
-    Parameters
-    ----------
-    line : str
-        A line.
+    Item must be a string.
+        Parameters
+        ----------
+        line : str
+            A line.
 
-    Returns
-    -------
-    str
-        The data item.
+        Returns
+        -------
+        str
+            The data item.
     """
     return get_line_item(line, (0, len(line)), str, "")
 
@@ -189,7 +189,6 @@ def dict_elements_to_datetime(
     dict[str, Any]
         A dictionary with the new key added.
     """
-
     date_time_args = {k: dd[k] for k in ["hour", "minute", "second", "day", "month", "year"] if k in dd}
 
     if not date_time_args:
@@ -233,7 +232,6 @@ def _parse_block_header_line(
     dict
         A dictionary of metadata.
     """
-
     format_string_dict = parse_format_string(header_format_string)
 
     metadata = {}
@@ -268,7 +266,6 @@ def make_string_python_safe(string: str) -> str:
     str
         The python safe string.
     """
-
     if string is None:
         return None
 

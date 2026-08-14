@@ -35,7 +35,6 @@ def get_rxn_block_metadata(
     dict
         A dictionary of metadata.
     """
-
     metadata = {}
     rxn_block_lines: list[str] = rxn_block.split("\n")
     metadata["reaction_name"] = get_whole_line_item(rxn_block_lines[1])
@@ -73,7 +72,6 @@ class DatumParser:
     def __iter__(self) -> Iterator[tuple[Any, int, str]]:
         """Iterate over the lines in the reaction block, identifying
         dtype/datum pairs and returning them as a tuple."""
-
         dtype_string_identifier = "$DTYPE "
 
         lines = self.rxn_block.split("\n")
@@ -117,7 +115,6 @@ class DatumParser:
             A tuple of the processed datum and the parsed
             dtype string.
         """
-
         parsed_dtype = parse_dtype_string(dtype)
         datum = preprocess_datum_string(datum)
 
@@ -141,7 +138,6 @@ class DatumParser:
 
 def detect_molblock_from_datum(datum: str) -> bool:
     """Tries to detect whether a datum string is a molblock."""
-
     if datum.startswith("$MFMT"):
         return True
     return False
@@ -149,7 +145,6 @@ def detect_molblock_from_datum(datum: str) -> bool:
 
 def preprocess_datum_molblock(datum: str) -> str:
     """Strips the datum down to just the molblock."""
-
     return "\n".join(datum.splitlines()[1:])  # remove the $MFMT line
 
 
@@ -186,7 +181,6 @@ def parse_dtype_string(dtype_string: str) -> str:
     str
         The contents of the $dtype line.
     """
-
     dtype_string = dtype_string.strip()  # Remove leading and trailing whitespace.
     dtype_string = dtype_string.replace("$DTYPE ", "")  # Remove the $dtype tag.
     dtype_string = make_string_python_safe(dtype_string)
@@ -206,7 +200,6 @@ def validate_rxn_block(rxn_block: str) -> bool:
     bool
         True if the rxn block is valid.
     """
-
     if rxn_block.startswith("$RXN"):
         return True
     else:

@@ -41,7 +41,6 @@ class RDFParser:
         parse_conditions : bool, optional
             Whether to parse the conditions of the reaction.
         """
-
         self.f = f
         self.header_format_string = header_format_string
         self.except_on_invalid_molecule = except_on_invalid_molecule
@@ -69,7 +68,6 @@ class RDFParser:
             The rxn block, the rxn id, and the line number of the start of the
             rxn block.
         """
-
         # get the next rxn block
         reaction = None
         rxn_block, rxn_id, start_lineno = self._next_rxn_block()
@@ -112,15 +110,15 @@ class RDFParser:
             self.rdf_metadata = {"version": version, "date_stamp": date_stamp}
 
     def _next_rxn_block(self) -> tuple[str, str, int]:
-        """Returns the next rxn block from a rdf file. If the end.
+        """Returns the next rxn block from a rdf file.
 
-        Returns
-        -------
-        tuple[str, str, int]
-            The rxn block, the rxn id, and the line number of the start of the
-            rxn block.
+        If the end.
+                Returns
+                -------
+                tuple[str, str, int]
+                    The rxn block, the rxn id, and the line number of the start of the
+                    rxn block.
         """
-
         self._header()
         start_lineno: int = self.lineno
         line: str = self._readline()
