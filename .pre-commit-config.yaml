@@ -17,7 +17,7 @@ repos:
     -  id: docformatter
 
 -   repo: https://github.com/PyCQA/isort
-    rev: 9.0.0b2
+    rev: 9.0.0b5
     hooks:
     -  id: isort
 
