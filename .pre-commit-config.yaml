@@ -17,12 +17,12 @@ repos:
     -  id: docformatter
 
 -   repo: https://github.com/PyCQA/isort
-    rev: 9.0.0b2
+    rev: 9.0.2
     hooks:
     -  id: isort
 
 -  repo: https://github.com/PyCQA/autoflake
-   rev: "v2.3.3"
+   rev: "v2.4.0"
    hooks:
    -  id: autoflake
       args: [--in-place, --remove-all-unused-imports, --remove-unused-variables, --ignore-init-module-imports]
@@ -33,19 +33,19 @@ repos:
     -   id: check-yaml
 
 -   repo: https://github.com/PyCQA/flake8
-    rev: 7.3.0
+    rev: 7.4.1
     hooks:
     -   id: flake8
 
 - repo: https://github.com/python-poetry/poetry
-  rev: '2.4.1'
+  rev: '2.5.1'
   hooks:
     - id: poetry-check
     # - id: poetry-lock  # a very time consuming hook, disable by default
 
 
 - repo: https://github.com/python-poetry/poetry-plugin-export
-  rev: '1.10.0'
+  rev: '1.10.1'
   hooks:
     - id: poetry-export
       args: ["-f", "requirements.txt", "-o", "requirements.txt"]#
