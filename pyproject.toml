@@ -1,21 +1,26 @@
-[tool.poetry]
+[project]
 name = "rdfreader"
 version = "1.0.5"
 description = "Read the full contents of CTAB .rdf files in python. Captures RXN and MOL record using RDKit and reads additional data fields (including solvents/catalysts/agents)."
-authors = ["ChemAI Ltd. <enquiries@chemai.io>"]
+authors = [{ name = "ChemAI Ltd.", email = "enquiries@chemai.io" }]
 license = "MIT"
+license-files = ["LICENSE.txt"]
 readme = "README.md"
-repository = "https://github.com/ChemAILtd/rdfreader/"
-homepage = "https://chemai.io"
 keywords = ["chemistry", "rdkit", "rdf", "rxn", "mol", "reaction", "molecule", "reader", "parser", "chemai", "ctab", "cheminformatics"]
+requires-python = ">=3.10,<4.0"
+dependencies = [
+    "rdkit>=2023.9,<2025.9.3",
+]
+dynamic = ["classifiers"]
+
+[project.urls]
+Homepage = "https://chemai.io"
+Repository = "https://github.com/ChemAILtd/rdfreader/"
+
+[tool.poetry]
 classifiers = [
-    "License :: OSI Approved :: MIT License",
     "Topic :: Scientific/Engineering :: Chemistry",
 ]
-
-[tool.poetry.dependencies]
-python = ">=3.10, <4.0"
-rdkit = ">=2023.9.*, <2025.9.3"
 
 [tool.poetry.group.dev.dependencies]
 pytest = "^9.1.1"
