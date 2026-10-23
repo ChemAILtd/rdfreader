@@ -1,6 +1,6 @@
 [project]
 name = "rdfreader"
-version = "1.0.5"
+version = "1.1.0"
 description = "Read the full contents of CTAB .rdf files in python. Captures RXN and MOL record using RDKit and reads additional data fields (including solvents/catalysts/agents)."
 authors = [{ name = "ChemAI Ltd.", email = "enquiries@chemai.io" }]
 license = "MIT"
