@@ -1,4 +1,7 @@
-from rdkit.Chem import Mol, MolFromMolBlock, MolToSmiles
+from unittest.mock import MagicMock
+
+import pytest
+from rdkit.Chem import Mol, MolFromMolBlock, MolFromSmiles, MolToMolBlock, MolToSmiles
 
 from rdfreader.chem.mol import Molecule
 
@@ -61,3 +64,65 @@ def test_molecule_from_smiles():
     mol = Molecule.from_smiles(smiles)
     assert mol.rd_mol is not None
     assert mol.smiles == smiles
+
+
+def test_molecule_mol_block_parsed_once(mocker, sample_mol_block):
+    """Test that validation, rd_mol and smiles share a single RDKit parse of
+    the mol block."""
+    parse_spy: MagicMock = mocker.patch("rdfreader.chem.mol.MolFromMolBlock", wraps=MolFromMolBlock)
+    mol = Molecule(sample_mol_block)  # validates the mol block
+    mol.smiles
+    mol.smiles
+    mol.rd_mol
+    mol.rd_mol
+    parse_spy.assert_called_once_with(sample_mol_block)
+
+
+def test_molecule_smiles_computed_once(mocker, sample_molecule):
+    """Test that the SMILES string is only generated once by RDKit."""
+    smiles_spy: MagicMock = mocker.patch("rdfreader.chem.mol.MolToSmiles", wraps=MolToSmiles)
+    first_smiles = sample_molecule.smiles
+    assert sample_molecule.smiles == first_smiles
+    smiles_spy.assert_called_once()
+
+
+def test_molecule_invalid_mol_block_parsed_once(mocker):
+    """Test that a failed parse is cached too, rather than retried on each
+    access."""
+    parse_spy: MagicMock = mocker.patch("rdfreader.chem.mol.MolFromMolBlock", wraps=MolFromMolBlock)
+    mol = Molecule("not a mol block", except_on_invalid_molecule=False)
+    assert mol.smiles is None
+    assert mol.smiles is None
+    assert mol.rd_mol is None
+    parse_spy.assert_called_once()
+
+
+def test_molecule_rd_mol_returns_copy(sample_molecule):
+    """Test that modifying the returned RDKit molecule does not affect the
+    cached molecule."""
+    original_smiles = sample_molecule.smiles
+    rd_mol = sample_molecule.rd_mol
+    assert rd_mol is not sample_molecule.rd_mol
+
+    rd_mol.GetAtomWithIdx(0).SetAtomicNum(54)
+    assert MolToSmiles(rd_mol) != original_smiles
+    assert MolToSmiles(sample_molecule.rd_mol) == original_smiles
+    assert sample_molecule.smiles == original_smiles
+
+
+@pytest.mark.parametrize(
+    "new_mol_block, expected_smiles",
+    [
+        (MolToMolBlock(MolFromSmiles("OCO")), "OCO"),
+        (None, None),
+        ("", None),
+    ],
+)
+def test_molecule_cache_cleared_on_mol_block_change(sample_molecule, new_mol_block, expected_smiles):
+    """Test that setting a new mol block, or clearing it, discards the cached
+    RDKit molecule and SMILES string."""
+    assert sample_molecule.smiles is not None  # populate the cache
+    sample_molecule.mol_block = new_mol_block
+    assert sample_molecule.smiles == expected_smiles
+    if expected_smiles is not None:
+        assert MolToSmiles(sample_molecule.rd_mol) == expected_smiles

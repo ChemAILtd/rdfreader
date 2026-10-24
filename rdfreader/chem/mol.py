@@ -5,6 +5,8 @@ from rdkit.Chem import Mol, MolFromMolBlock, MolFromSmiles, MolToMolBlock, MolTo
 from rdfreader.exceptions import InvalidMoleculeError
 from rdfreader.parse.molblock import get_mol_block_metadata
 
+_UNSET = object()  # sentinel for cached values that have not been computed yet
+
 
 class Molecule:
     def __init__(
@@ -53,15 +55,31 @@ class Molecule:
         """
         if not mol_block:
             self._mol_block = None
+            self._clear_cache()
         else:
             self._from_mol_block(mol_block)
 
+    def _clear_cache(self) -> None:
+        """Reset the cached RDKit molecule and SMILES string."""
+        self._cached_rd_mol = _UNSET
+        self._cached_smiles = _UNSET
+
+    def _get_cached_rd_mol(self) -> Mol:
+        """Return the RDKit molecule parsed from the mol block, parsing it only
+        once."""
+        if self._cached_rd_mol is _UNSET:
+            self._cached_rd_mol = MolFromMolBlock(self.mol_block)
+        return self._cached_rd_mol
+
     @property
     def rd_mol(self) -> Mol:
-        """Return the RDKit molecule object."""
-        return MolFromMolBlock(
-            self.mol_block,
-        )
+        """Return the RDKit molecule object.
+
+        A new copy is returned on each access, so it can be safely
+        modified.
+        """
+        rd_mol = self._get_cached_rd_mol()
+        return Mol(rd_mol) if rd_mol is not None else None
 
     @property
     def smiles(self) -> str:
@@ -70,10 +88,12 @@ class Molecule:
         Returns:
             str: SMILES string of the molecule.
         """
-        try:
-            return MolToSmiles(self.rd_mol)
-        except Exception:
-            return None
+        if self._cached_smiles is _UNSET:
+            try:
+                self._cached_smiles = MolToSmiles(self._get_cached_rd_mol())
+            except Exception:
+                self._cached_smiles = None
+        return self._cached_smiles
 
     @property
     def metadata(self) -> dict[str, Any]:
@@ -94,10 +114,11 @@ class Molecule:
         """
         self.properties.update(properties)
         self._mol_block = mol_block
+        self._clear_cache()
 
         if self.except_on_invalid_molecule:
             try:
-                assert self.rd_mol is not None
+                assert self._get_cached_rd_mol() is not None
             except AssertionError:
                 raise InvalidMoleculeError("mol_block is not a valid mol block string.")
 
