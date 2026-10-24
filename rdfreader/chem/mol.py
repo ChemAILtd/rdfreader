@@ -1,14 +1,16 @@
-from typing import Any
+from functools import cached_property
+from typing import Any, Optional
 
 from rdkit.Chem import Mol, MolFromMolBlock, MolFromSmiles, MolToMolBlock, MolToSmiles
 
 from rdfreader.exceptions import InvalidMoleculeError
 from rdfreader.parse.molblock import get_mol_block_metadata
 
-_UNSET = object()  # sentinel for cached values that have not been computed yet
-
 
 class Molecule:
+    # cached_property names, cleared whenever the mol block changes
+    _CACHED_ATTRS = ("_rd_mol", "_smiles")
+
     def __init__(
         self,
         mol_block: str = None,
@@ -61,15 +63,23 @@ class Molecule:
 
     def _clear_cache(self) -> None:
         """Reset the cached RDKit molecule and SMILES string."""
-        self._cached_rd_mol = _UNSET
-        self._cached_smiles = _UNSET
+        for attr in self._CACHED_ATTRS:
+            self.__dict__.pop(attr, None)
 
-    def _get_cached_rd_mol(self) -> Mol:
-        """Return the RDKit molecule parsed from the mol block, parsing it only
-        once."""
-        if self._cached_rd_mol is _UNSET:
-            self._cached_rd_mol = MolFromMolBlock(self.mol_block)
-        return self._cached_rd_mol
+    @cached_property
+    def _rd_mol(self) -> Optional[Mol]:
+        """The RDKit molecule parsed from the mol block, parsed only once."""
+        if self.mol_block is None:
+            return None
+        return MolFromMolBlock(self.mol_block)
+
+    @cached_property
+    def _smiles(self) -> Optional[str]:
+        """The SMILES string of the molecule, computed only once."""
+        try:
+            return MolToSmiles(self._rd_mol)
+        except Exception:
+            return None
 
     @property
     def rd_mol(self) -> Mol:
@@ -78,8 +88,7 @@ class Molecule:
         A new copy is returned on each access, so it can be safely
         modified.
         """
-        rd_mol = self._get_cached_rd_mol()
-        return Mol(rd_mol) if rd_mol is not None else None
+        return Mol(self._rd_mol) if self._rd_mol is not None else None
 
     @property
     def smiles(self) -> str:
@@ -88,12 +97,7 @@ class Molecule:
         Returns:
             str: SMILES string of the molecule.
         """
-        if self._cached_smiles is _UNSET:
-            try:
-                self._cached_smiles = MolToSmiles(self._get_cached_rd_mol())
-            except Exception:
-                self._cached_smiles = None
-        return self._cached_smiles
+        return self._smiles
 
     @property
     def metadata(self) -> dict[str, Any]:
@@ -118,7 +122,7 @@ class Molecule:
 
         if self.except_on_invalid_molecule:
             try:
-                assert self._get_cached_rd_mol() is not None
+                assert self._rd_mol is not None
             except AssertionError:
                 raise InvalidMoleculeError("mol_block is not a valid mol block string.")
 
