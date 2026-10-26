@@ -67,39 +67,50 @@ def test_molecule_from_smiles():
 
 
 def test_molecule_mol_block_parsed_once(mocker, sample_mol_block):
-    """Test that validation, rd_mol and smiles share a single RDKit parse of
-    the mol block."""
+    """Test that validation and smiles share a single RDKit parse of the mol
+    block."""
     parse_spy: MagicMock = mocker.patch("rdfreader.chem.mol.MolFromMolBlock", wraps=MolFromMolBlock)
     mol = Molecule(sample_mol_block)  # validates the mol block
     mol.smiles
     mol.smiles
-    mol.rd_mol
-    mol.rd_mol
     parse_spy.assert_called_once_with(sample_mol_block)
 
 
-def test_molecule_smiles_computed_once(mocker, sample_molecule):
+def test_molecule_rd_mol_not_cached(mocker, sample_mol_block):
+    """Test that the RDKit molecule is not kept in memory: each rd_mol access
+    re-parses the mol block."""
+    parse_spy: MagicMock = mocker.patch("rdfreader.chem.mol.MolFromMolBlock", wraps=MolFromMolBlock)
+    mol = Molecule(sample_mol_block)
+    mol.rd_mol
+    mol.rd_mol
+    assert parse_spy.call_count == 3  # validation + 2 accesses
+    assert "_smiles" in mol.__dict__
+    assert not any(isinstance(value, Mol) for value in mol.__dict__.values())
+
+
+def test_molecule_smiles_computed_once(mocker, sample_mol_block):
     """Test that the SMILES string is only generated once by RDKit."""
     smiles_spy: MagicMock = mocker.patch("rdfreader.chem.mol.MolToSmiles", wraps=MolToSmiles)
-    first_smiles = sample_molecule.smiles
-    assert sample_molecule.smiles == first_smiles
+    mol = Molecule(sample_mol_block)
+    first_smiles = mol.smiles
+    assert mol.smiles == first_smiles
     smiles_spy.assert_called_once()
 
 
 def test_molecule_invalid_mol_block_parsed_once(mocker):
-    """Test that a failed parse is cached too, rather than retried on each
-    access."""
+    """Test that a failed SMILES computation is cached too, rather than the
+    parse being retried on each smiles access (rd_mol always re-parses)."""
     parse_spy: MagicMock = mocker.patch("rdfreader.chem.mol.MolFromMolBlock", wraps=MolFromMolBlock)
     mol = Molecule("not a mol block", except_on_invalid_molecule=False)
     assert mol.smiles is None
     assert mol.smiles is None
-    assert mol.rd_mol is None
     parse_spy.assert_called_once()
+    assert mol.rd_mol is None
 
 
-def test_molecule_rd_mol_returns_copy(sample_molecule):
+def test_molecule_rd_mol_is_independent(sample_molecule):
     """Test that modifying the returned RDKit molecule does not affect the
-    cached molecule."""
+    Molecule, its later rd_mol values or its cached SMILES string."""
     original_smiles = sample_molecule.smiles
     rd_mol = sample_molecule.rd_mol
     assert rd_mol is not sample_molecule.rd_mol
@@ -120,7 +131,7 @@ def test_molecule_rd_mol_returns_copy(sample_molecule):
 )
 def test_molecule_cache_cleared_on_mol_block_change(sample_molecule, new_mol_block, expected_smiles):
     """Test that setting a new mol block, or clearing it, discards the cached
-    RDKit molecule and SMILES string."""
+    SMILES string."""
     assert sample_molecule.smiles is not None  # populate the cache
     sample_molecule.mol_block = new_mol_block
     assert sample_molecule.smiles == expected_smiles

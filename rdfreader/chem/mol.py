@@ -8,8 +8,10 @@ from rdfreader.parse.molblock import get_mol_block_metadata
 
 
 class Molecule:
-    # cached_property names, cleared whenever the mol block changes
-    _CACHED_ATTRS = ("_rd_mol", "_smiles")
+    # cached_property names, cleared whenever the mol block changes.
+    # Only the SMILES string is cached: the RDKit Mol object is much larger
+    # and is re-parsed from the mol block on demand to keep memory low.
+    _CACHED_ATTRS = ("_smiles",)
 
     def __init__(
         self,
@@ -62,33 +64,38 @@ class Molecule:
             self._from_mol_block(mol_block)
 
     def _clear_cache(self) -> None:
-        """Reset the cached RDKit molecule and SMILES string."""
+        """Reset the cached SMILES string."""
         for attr in self._CACHED_ATTRS:
             self.__dict__.pop(attr, None)
 
-    @cached_property
-    def _rd_mol(self) -> Optional[Mol]:
-        """The RDKit molecule parsed from the mol block, parsed only once."""
+    def _parse_rd_mol(self) -> Optional[Mol]:
+        """Parse the mol block into an RDKit molecule (not cached)."""
         if self.mol_block is None:
             return None
         return MolFromMolBlock(self.mol_block)
 
-    @cached_property
-    def _smiles(self) -> Optional[str]:
-        """The SMILES string of the molecule, computed only once."""
+    @staticmethod
+    def _to_smiles(rd_mol: Optional[Mol]) -> Optional[str]:
+        """Convert an RDKit molecule to SMILES, returning None on failure."""
         try:
-            return MolToSmiles(self._rd_mol)
+            return MolToSmiles(rd_mol)
         except Exception:
             return None
+
+    @cached_property
+    def _smiles(self) -> Optional[str]:
+        """The SMILES string of the molecule, computed only once and cached."""
+        return self._to_smiles(self._parse_rd_mol())
 
     @property
     def rd_mol(self) -> Mol:
         """Return the RDKit molecule object.
 
-        A new copy is returned on each access, so it can be safely
+        The molecule is parsed from the mol block on each access (it is
+        not cached, to keep memory usage low), so it can be safely
         modified.
         """
-        return Mol(self._rd_mol) if self._rd_mol is not None else None
+        return self._parse_rd_mol()
 
     @property
     def smiles(self) -> str:
@@ -121,10 +128,12 @@ class Molecule:
         self._clear_cache()
 
         if self.except_on_invalid_molecule:
-            try:
-                assert self._rd_mol is not None
-            except AssertionError:
+            rd_mol = self._parse_rd_mol()
+            if rd_mol is None:
                 raise InvalidMoleculeError("mol_block is not a valid mol block string.")
+            # Reuse the parse done for validation to fill the SMILES cache,
+            # so the mol block is only parsed once on load
+            self.__dict__["_smiles"] = self._to_smiles(rd_mol)
 
     @classmethod
     def from_mol_block(cls, mol_block: str, properties: dict[str, Any] = {}) -> "Molecule":
