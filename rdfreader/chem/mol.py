@@ -88,7 +88,7 @@ class Molecule:
         return self._to_smiles(self._parse_rd_mol())
 
     @property
-    def rd_mol(self) -> Mol:
+    def rd_mol(self) -> Optional[Mol]:
         """Return the RDKit molecule object.
 
         The molecule is parsed from the mol block on each access (it is
