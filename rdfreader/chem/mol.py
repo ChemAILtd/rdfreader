@@ -98,7 +98,7 @@ class Molecule:
         return self._parse_rd_mol()
 
     @property
-    def smiles(self) -> str:
+    def smiles(self) -> Optional[str]:
         """Returns the SMILES string of the molecule using RDKit.
 
         Returns:
