@@ -2,6 +2,7 @@
 from unittest.mock import MagicMock
 
 import pytest
+from rdkit.Chem import MolFromMolBlock
 
 from rdfreader.chem.reaction import Reaction
 
@@ -46,3 +47,15 @@ def test_reaction_to_smiles_no_reagents(mocker, sample_rxn_block):
     reaction: Reaction = Reaction(sample_rxn_block)
     reaction.smiles_no_reagents
     reaction_smiles_patch.assert_called()
+
+
+def test_reaction_parses_each_mol_block_once(mocker, sample_rxn_block):
+    """Test that parsing a reaction (including validation and building the
+    reaction SMILES) only parses each molecule's mol block once with RDKit."""
+    parse_spy: MagicMock = mocker.patch("rdfreader.chem.mol.MolFromMolBlock", wraps=MolFromMolBlock)
+    reaction: Reaction = Reaction(sample_rxn_block)
+    reaction.smiles
+    reaction.smiles_no_reagents
+    molecule_count = len(reaction.reactants + reaction.products + reaction.reagents)
+    assert molecule_count > 0
+    assert parse_spy.call_count == molecule_count
