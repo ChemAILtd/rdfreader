@@ -17,7 +17,7 @@ repos:
     -  id: docformatter
 
 -   repo: https://github.com/PyCQA/isort
-    rev: 10.0.0b1
+    rev: 10.0.0b2
     hooks:
     -  id: isort
 
@@ -33,7 +33,7 @@ repos:
     -   id: check-yaml
 
 -   repo: https://github.com/PyCQA/flake8
-    rev: 7.4.1
+    rev: 7.5.0
     hooks:
     -   id: flake8
 
